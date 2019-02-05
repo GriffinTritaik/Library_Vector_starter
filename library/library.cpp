@@ -7,12 +7,16 @@
 #include "../includes_usr/library.h"
 #include "../includes_usr/datastructures.h"
 #include "../includes_usr/fileIO.h"
+#include "../includes_usr/constants.h"
 using namespace std;
+
 
 //NOTE: please ensure patron and book data are loaded from disk before calling the following
 //NOTE: also make sure you save patron and book data to disk any time you make a change to them
 //NOTE: for files where data is stored see constants.h BOOKFILE and PATRONFILE
 
+vector<patron> people;
+vector<book> books;
 /*
  * clear books and patrons containers
  * then reload them from disk 
@@ -42,6 +46,23 @@ void reloadAllData(){
  *         TOO_MANY_OUT patron has the max number of books allowed checked out
  */
 int checkout(int bookid, int patronid){
+	int i = 0;
+	while (people[i].patron_id != patronid) {
+		if (i == people.size()){
+			return PATRON_NOT_ENROLLED;
+		}
+		i++;
+	}
+	if (people[i].number_books_checked_out > MAX_BOOKS_ALLOWED_OUT){
+		return TOO_MANY_OUT;
+	}
+	i = 0;
+	while (books[i].book_id != bookid) {
+		if (i == books.size()){
+			return BOOK_NOT_IN_COLLECTION;
+		}
+		i++;
+	}
 	return SUCCESS;
 }
 
