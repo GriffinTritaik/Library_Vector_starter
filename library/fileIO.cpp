@@ -1,5 +1,24 @@
+#include <iostream>
+#include <fstream>
+#include <sstream>
+#include <string>
 #include "../includes_usr/fileIO.h"
 using namespace std;
+
+bool readFileIntoVector(ifstream &file) {
+	bool retValue = true;
+
+	std::string line;
+	std::string token;
+
+	return retValue;
+}
+
+void processLine(std::string &myString){
+    std::stringstream ss(myString);
+    std::string token;
+
+}
 /* clears, then loads books from the file filename
  * returns  COULD_NOT_OPEN_FILE if cannot open filename
  * 			NO_BOOKS_IN_LIBRARY if there are 0 entries in books
@@ -7,6 +26,16 @@ using namespace std;
  * */
 int loadBooks(std::vector<book> &books, const char* filename)
 {
+	ifstream myFile;
+	myFile.open(filename);
+	if (!myFile.is_open()){
+		return COULD_NOT_OPEN_FILE;
+	}
+
+	if (!readFileIntoVector(myFile)){
+		return NO_BOOKS_IN_LIBRARY;
+	}
+
 	return SUCCESS;
 }
 
@@ -17,6 +46,12 @@ int loadBooks(std::vector<book> &books, const char* filename)
  * */
 int saveBooks(std::vector<book> &books, const char* filename)
 {
+	ifstream myFile;
+	myFile.open(filename);
+	if (!myFile.is_open()){
+		return COULD_NOT_OPEN_FILE;
+	}
+
 	return SUCCESS;
 }
 
@@ -27,6 +62,13 @@ int saveBooks(std::vector<book> &books, const char* filename)
  * */
 int loadPatrons(std::vector<patron> &patrons, const char* filename)
 {
+	ifstream myFile;
+	myFile.open(filename);
+	if (!myFile.is_open()){
+		return COULD_NOT_OPEN_FILE;
+	}
+
+
 	return SUCCESS;
 }
 
@@ -37,5 +79,14 @@ int loadPatrons(std::vector<patron> &patrons, const char* filename)
  * */
 int savePatrons(std::vector<patron> &patrons, const char* filename)
 {
+	ifstream myFile;
+	myFile.open(filename);
+	if (!myFile.is_open()){
+		return COULD_NOT_OPEN_FILE;
+	}
+
+
 	return SUCCESS;
 }
+
+
