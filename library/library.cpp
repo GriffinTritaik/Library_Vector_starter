@@ -15,14 +15,18 @@ using namespace std;
 //NOTE: also make sure you save patron and book data to disk any time you make a change to them
 //NOTE: for files where data is stored see constants.h BOOKFILE and PATRONFILE
 
-vector<patron> people;
+vector<patron> patrons;
 vector<book> books;
+int bookLoad = loadBooks(books, BOOKFILE.c_str());
+int patronLoad = loadPatrons(patrons, PATRONFILE.c_str());
+
 /*
  * clear books and patrons containers
  * then reload them from disk 
  */
 void reloadAllData(){
-
+	int reloadBook = loadBooks(books, BOOKFILE.c_str());
+	int reloadPatron = loadPatrons(patrons, PATRONFILE.c_str());
 }
 
 /* checkout a book to a patron
@@ -47,13 +51,13 @@ void reloadAllData(){
  */
 int checkout(int bookid, int patronid){
 	int i = 0;
-	while (people[i].patron_id != patronid) {
-		if (i == people.size()){
+	while (patrons[i].patron_id != patronid) {
+		if (i == patrons.size()){
 			return PATRON_NOT_ENROLLED;
 		}
 		i++;
 	}
-	if (people[i].number_books_checked_out > MAX_BOOKS_ALLOWED_OUT){
+	if (patrons[i].number_books_checked_out > MAX_BOOKS_ALLOWED_OUT){
 		return TOO_MANY_OUT;
 	}
 	i = 0;
@@ -101,7 +105,7 @@ int enroll(std::string &name){
  * 
  */
 int numbBooks(){
-	return 0;
+	return books.size();
 }
 
 /*
@@ -109,7 +113,7 @@ int numbBooks(){
  * (ie. if 3 patrons returns 3)
  */
 int numbPatrons(){
-	return 0;
+	return patrons.size();
 }
 
 /*the number of books patron has checked out
@@ -118,7 +122,12 @@ int numbPatrons(){
  *        or PATRON_NOT_ENROLLED         
  */
 int howmanybooksdoesPatronHaveCheckedOut(int patronid){
-	return 0;
+	for (int i = 0; i < patrons.size(); i++){
+			if (patrons[i].patron_id == patronid){
+				return patrons[i].number_books_checked_out;
+			}
+		}
+	return PATRON_NOT_ENROLLED;
 }
 
 /* search through patrons container to see if patronid is there
@@ -128,6 +137,11 @@ int howmanybooksdoesPatronHaveCheckedOut(int patronid){
  *         PATRON_NOT_ENROLLED no patron with this patronid
  */
 int whatIsPatronName(std::string &name,int patronid){
-	return SUCCESS;
+	for (int i = 0; i < patrons.size(); i++){
+		if (patrons[i].patron_id == patronid || patrons[i].name == name){
+			return SUCCESS;
+		}
+	}
+	return PATRON_NOT_ENROLLED;
 }
 
