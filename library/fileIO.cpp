@@ -113,9 +113,10 @@ int loadPatrons(std::vector<patron> &patrons, const char* filename)
 	}
 
 	if (patrons.empty()){
-		return NO_BOOKS_IN_LIBRARY;
+		return NO_PATRONS_IN_LIBRARY;
 	}
 
+	myFile.close();
 	return SUCCESS;
 }
 
@@ -126,13 +127,22 @@ int loadPatrons(std::vector<patron> &patrons, const char* filename)
  * */
 int savePatrons(std::vector<patron> &patrons, const char* filename)
 {
-	ifstream myFile;
+	ofstream myFile;
 	myFile.open(filename);
 	if (!myFile.is_open()){
 		return COULD_NOT_OPEN_FILE;
 	}
 
+	if (patrons.empty()){
+		return NO_PATRONS_IN_LIBRARY;
+	}
 
+	for (int i = 0; i < patrons.size(); i++){
+		myFile << patrons[i].patron_id << "," << patrons[i].name << "," <<
+				patrons[i].number_books_checked_out << endl;
+	}
+
+	myFile.close();
 	return SUCCESS;
 }
 
