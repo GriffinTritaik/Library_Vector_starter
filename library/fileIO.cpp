@@ -70,11 +70,14 @@ int saveBooks(std::vector<book> &books, const char* filename)
 		return NO_BOOKS_IN_LIBRARY;
 	}
 
-	for (int i = 0; i < books.size(); i++){
+	for (int i = 0; i < books.size()-1; i++){
 		myFile << books[i].book_id << "," << books[i].title << "," <<
 				books[i].author << "," << books[i].state << "," <<
 				books[i].loaned_to_patron_id << endl;
 	}
+	myFile << books[books.size()-1].book_id << "," << books[books.size()-1].title << "," <<
+	books[books.size()-1].author << "," << books[books.size()-1].state << "," <<
+	books[books.size()-1].loaned_to_patron_id;
 
 	myFile.close();
 	return SUCCESS;
