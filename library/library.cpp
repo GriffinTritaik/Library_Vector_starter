@@ -17,8 +17,7 @@ using namespace std;
 
 vector<patron> patrons;
 vector<book> books;
-int bookLoad = loadBooks(books, BOOKFILE.c_str());
-int patronLoad = loadPatrons(patrons, PATRONFILE.c_str());
+
 
 /*
  * clear books and patrons containers
@@ -50,6 +49,7 @@ void reloadAllData(){
  *         TOO_MANY_OUT patron has the max number of books allowed checked out
  */
 int checkout(int bookid, int patronid){
+	reloadAllData();
 	int i = 0;
 	while (patrons[i].patron_id != patronid) {
 		if (i == patrons.size()){
@@ -83,6 +83,7 @@ int checkout(int bookid, int patronid){
  * 		   BOOK_NOT_IN_COLLECTION
  */
 int checkin(int bookid){
+	reloadAllData();
 	return SUCCESS;
 }
 
@@ -96,7 +97,13 @@ int checkin(int bookid){
  *    the patron_id of the person added
  */
 int enroll(std::string &name){
-	return 0;
+	reloadAllData();
+	patron toAdd;
+	toAdd.name = name;
+	toAdd.patron_id = patrons.size();;
+	patrons.push_back(toAdd);
+	savePatrons(patrons,PATRONFILE.c_str());
+	return patrons.size()-1;
 }
 
 /*
@@ -105,6 +112,7 @@ int enroll(std::string &name){
  * 
  */
 int numbBooks(){
+	reloadAllData();
 	return books.size();
 }
 
@@ -113,6 +121,7 @@ int numbBooks(){
  * (ie. if 3 patrons returns 3)
  */
 int numbPatrons(){
+	reloadAllData();
 	return patrons.size();
 }
 
@@ -122,6 +131,7 @@ int numbPatrons(){
  *        or PATRON_NOT_ENROLLED         
  */
 int howmanybooksdoesPatronHaveCheckedOut(int patronid){
+	reloadAllData();
 	for (int i = 0; i < patrons.size(); i++){
 			if (patrons[i].patron_id == patronid){
 				return patrons[i].number_books_checked_out;
@@ -137,6 +147,7 @@ int howmanybooksdoesPatronHaveCheckedOut(int patronid){
  *         PATRON_NOT_ENROLLED no patron with this patronid
  */
 int whatIsPatronName(std::string &name,int patronid){
+	reloadAllData();
 	for (int i = 0; i < patrons.size(); i++){
 		if (patrons[i].patron_id == patronid || patrons[i].name == name){
 			return SUCCESS;
