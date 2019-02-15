@@ -50,23 +50,20 @@ void reloadAllData(){
  */
 int checkout(int bookid, int patronid){
 	reloadAllData();
-	int i = 0;
-	while (patrons[i].patron_id != patronid) {
-		if (i == patrons.size()){
-			return PATRON_NOT_ENROLLED;
-		}
-		i++;
+	if (patrons.size() <= patronid){
+		return PATRON_NOT_ENROLLED;
 	}
-	if (patrons[i].number_books_checked_out > MAX_BOOKS_ALLOWED_OUT){
+	if (books.size() <= bookid){
+		return BOOK_NOT_IN_COLLECTION;
+	}
+	patrons[patronid].number_books_checked_out++;
+	if (patrons[patronid].number_books_checked_out > MAX_BOOKS_ALLOWED_OUT){
 		return TOO_MANY_OUT;
 	}
-	i = 0;
-	while (books[i].book_id != bookid) {
-		if (i == books.size()){
-			return BOOK_NOT_IN_COLLECTION;
-		}
-		i++;
-	}
+	books[bookid].loaned_to_patron_id = patronid;
+	books[bookid].state = OUT;
+	saveBooks(books,BOOKFILE.c_str());
+	savePatrons(patrons,PATRONFILE.c_str());
 	return SUCCESS;
 }
 
@@ -84,6 +81,15 @@ int checkout(int bookid, int patronid){
  */
 int checkin(int bookid){
 	reloadAllData();
+	if (books.size() <= bookid){
+		return BOOK_NOT_IN_COLLECTION;
+	}
+	int pID = books[bookid].loaned_to_patron_id;
+	patrons[pID].number_books_checked_out--;
+	books[bookid].loaned_to_patron_id = NO_ONE;
+	books[bookid].state = IN;
+	saveBooks(books,BOOKFILE.c_str());
+	savePatrons(patrons,PATRONFILE.c_str());
 	return SUCCESS;
 }
 
@@ -132,11 +138,9 @@ int numbPatrons(){
  */
 int howmanybooksdoesPatronHaveCheckedOut(int patronid){
 	reloadAllData();
-	for (int i = 0; i < patrons.size(); i++){
-			if (patrons[i].patron_id == patronid){
-				return patrons[i].number_books_checked_out;
-			}
-		}
+	if (patrons.size() > patronid){
+		return patrons[patronid].number_books_checked_out;
+	}
 	return PATRON_NOT_ENROLLED;
 }
 
